@@ -4,12 +4,17 @@
 // 뉴스 뽑아내기(보여주기) let news [] = articles
 
 let news = [];
+let menus = document.querySelectorAll(".menus button");
 
-const getElNews = async () => {
-  // js url 클래스
-  let url = new URL(
-    `https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=sport&page_size=10`
-  );
+// foreach 를 통한 각각 메뉴 에다가 아이템을 준다 메뉴 반복
+menus.forEach((menu) =>
+  menu.addEventListener("click", (event) => getNewsByTopic(event))
+);
+// 검색 버튼 클릭 변수
+let searchButton = document.getElementById("search-button");
+let url; // url 지역변수 대신 전역변수 선언
+
+const getNews = async () => {
   let header = new Headers({
     "x-api-key": "3kuPZHI0QFA2W3JFflmZezQxiKlQzLcbFCWaNQtd9iQ",
   });
@@ -20,7 +25,47 @@ const getElNews = async () => {
 
   render(); // render ui에 뿌려진 뉴스를 호이스팅을 이용해 호출한다.
 };
+
+// 메인 뉴스 페이지
+const getElNews = () => {
+  // js url 클래스
+  url = new URL(
+    `https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=sport&page_size=10`
+  );
+  getNews();
+};
+
+// 각 메뉴들을 클릭 했을때 페이지 종류별로 페이지를 가져온다.
+// articles 뽑아주기
+const getNewsByTopic = (event) => {
+  console.log("클릭", event.target.textContent);
+  let topic = event.target.textContent.toLowerCase();
+  url = new URL(
+    `https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`
+  );
+  getNews();
+};
+
+// 검색 버튼 함수
+const getNewsByKeyword = async () => {
+  // 1. 검색 키워드 읽어오기
+  // 2. url에 검색 키워드 입력하기
+  // 3. 헤더준비
+  // 4. url 부르기
+  // 5.데이터 가져오기
+  // 6.데이터 보여주기
+
+  // 1. input에 있는 키워드 불러오기 id(search-input)복사해서 가져온다 뒤에 .value(값)을 붙여준다
+  let keyword = document.getElementById("search-input").value;
+  url = new URL(
+    `https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`
+  );
+  getNews();
+};
+
+// textContent : 태그 안에 있는 내용만 가지고 온다.
 // for문 대신 array 배열(news) map을 사용하여 새로운 배열데이터를 html에 뿌려준다.
+// toLowerCase() : 소문자로 변경해주는 함수
 const render = () => {
   let newsHTMl = "";
   newsHTMl = news
@@ -51,4 +96,6 @@ const render = () => {
   // ${news.media} : ui에 고정된 이미지 글들을 문자보간 방식으로 api에서 꺼내와 변경해준다.
   document.getElementById("header-board").innerHTML = newsHTMl;
 };
+// 화살표 함수 사용시 호이스팅이 안되기 때문에 searchButton을 아래쪽으로 이동해주었다.
+searchButton.addEventListener("click", getNewsByKeyword);
 getElNews();

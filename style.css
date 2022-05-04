@@ -73,6 +73,7 @@ a {
   margin: 0 auto;
 }
 #header-board .news-list {
+  width: 100%;
   border-bottom: 2px solid black;
   display: flex;
 }

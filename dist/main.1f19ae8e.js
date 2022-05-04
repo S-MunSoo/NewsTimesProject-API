@@ -127,34 +127,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // url 준비->헤더 준비->서버에 요청->데이터 보여짐.
 // 뉴스 뽑아내기(보여주기) let news [] = articles
 var news = [];
+var menus = document.querySelectorAll(".menus button"); // foreach 를 통한 각각 메뉴 에다가 아이템을 준다 메뉴 반복
 
-var getElNews = /*#__PURE__*/function () {
+menus.forEach(function (menu) {
+  return menu.addEventListener("click", function (event) {
+    return getNewsByTopic(event);
+  });
+}); // 검색 버튼 클릭 변수
+
+var searchButton = document.getElementById("search-button");
+var url; // url 지역변수 대신 전역변수 선언
+
+var getNews = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var url, header, response, data;
+    var header, response, data;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            // js url 클래스
-            url = new URL("https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=sport&page_size=10");
             header = new Headers({
               "x-api-key": "3kuPZHI0QFA2W3JFflmZezQxiKlQzLcbFCWaNQtd9iQ"
             });
-            _context.next = 4;
+            _context.next = 3;
             return fetch(url, {
               headers: header
             });
 
-          case 4:
+          case 3:
             response = _context.sent;
-            _context.next = 7;
+            _context.next = 6;
             return response.json();
 
-          case 7:
+          case 6:
             data = _context.sent;
             // response 응답객체와 세트 (json : 서버통신에서 많이쓰이는 자료형 타입)
             news = data.articles;
             console.log(news);
+            render(); // render ui에 뿌려진 뉴스를 호이스팅을 이용해 호출한다.
 
           case 10:
           case "end":
@@ -164,11 +173,75 @@ var getElNews = /*#__PURE__*/function () {
     }, _callee);
   }));
 
-  return function getElNews() {
+  return function getNews() {
     return _ref.apply(this, arguments);
   };
-}();
+}(); // 메인 뉴스 페이지
 
+
+var getElNews = function getElNews() {
+  // js url 클래스
+  url = new URL("https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=sport&page_size=10");
+  getNews();
+}; // 각 메뉴들을 클릭 했을때 페이지 종류별로 페이지를 가져온다.
+// articles 뽑아주기
+
+
+var getNewsByTopic = function getNewsByTopic(event) {
+  console.log("클릭", event.target.textContent);
+  var topic = event.target.textContent.toLowerCase();
+  url = new URL("https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=".concat(topic));
+  getNews();
+}; // 검색 버튼 함수
+
+
+var getNewsByKeyword = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var keyword;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            // 1. 검색 키워드 읽어오기
+            // 2. url에 검색 키워드 입력하기
+            // 3. 헤더준비
+            // 4. url 부르기
+            // 5.데이터 가져오기
+            // 6.데이터 보여주기
+            // 1. input에 있는 키워드 불러오기 id(search-input)복사해서 가져온다 뒤에 .value(값)을 붙여준다
+            keyword = document.getElementById("search-input").value;
+            url = new URL("https://api.newscatcherapi.com/v2/search?q=".concat(keyword, "&page_size=10"));
+            getNews();
+
+          case 3:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function getNewsByKeyword() {
+    return _ref2.apply(this, arguments);
+  };
+}(); // textContent : 태그 안에 있는 내용만 가지고 온다.
+// for문 대신 array 배열(news) map을 사용하여 새로운 배열데이터를 html에 뿌려준다.
+// toLowerCase() : 소문자로 변경해주는 함수
+
+
+var render = function render() {
+  var newsHTMl = "";
+  newsHTMl = news // newsHTMl = news 여기서의 news 배열 그자체이고, .map((item)에 있는 news는 각각의 배열 아이템들 이다.
+  .map(function (item) {
+    return "<div class=\"news-list\">\n    <div class=\"img-area\">\n      <img\n        src=\"".concat(item.media, "\"\n        alt=\"\"\n      />\n    </div>\n    <div class=\"text-area\">\n      <h2>").concat(item.title, "</h2>\n      <p>").concat(item.summary == null || item.summary == "" ? "내용없음" : item.summary.length > 200 ? item.summary.substring(0, 200) + "..." : item.summary, "</p>\n      <div>").concat(item.rights, " * ").concat(item.published_date, "</div>\n    </div>\n  </div>");
+  }).join(""); // news는 배열데이터라 ui에(콤마)가 보인다 .join('')를 이용해 배열->string으로 바꿔 콤마표시를 제거해준다.
+  // ${news.media} : ui에 고정된 이미지 글들을 문자보간 방식으로 api에서 꺼내와 변경해준다.
+
+  document.getElementById("header-board").innerHTML = newsHTMl;
+}; // 화살표 함수 사용시 호이스팅이 안되기 때문에 searchButton을 아래쪽으로 이동해주었다.
+
+
+searchButton.addEventListener("click", getNewsByKeyword);
 getElNews();
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -198,7 +271,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54741" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49372" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
