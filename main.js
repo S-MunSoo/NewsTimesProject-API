@@ -14,16 +14,31 @@ menus.forEach((menu) =>
 let searchButton = document.getElementById("search-button");
 let url; // url 지역변수 대신 전역변수 선언
 
+//  getNews  뉴스 부르는 메인 header 페이지 부분
 const getNews = async () => {
-  let header = new Headers({
-    "x-api-key": "3kuPZHI0QFA2W3JFflmZezQxiKlQzLcbFCWaNQtd9iQ",
-  });
-  let response = await fetch(url, { headers: header }); // 데이터를 보내는 방식 fetch 하지만 아직 데이터가 안와서 await로 기다려준다
-  let data = await response.json(); // response 응답객체와 세트 (json : 서버통신에서 많이쓰이는 자료형 타입)
-  news = data.articles;
-  console.log(news);
-
-  render(); // render ui에 뿌려진 뉴스를 호이스팅을 이용해 호출한다.
+  // 에러 핸들링 try
+  try {
+    let header = new Headers({
+      "x-api-key": "3kuPZHI0QFA2W3JFflmZezQxiKlQzLcbFCWaNQtd9iQ",
+    });
+    let response = await fetch(url, { headers: header }); // 데이터를 보내는 방식 fetch 하지만 아직 데이터가 안와서 await로 기다려준다
+    let data = await response.json(); // response 응답객체와 세트 (json : 서버통신에서 많이쓰이는 자료형 타입)
+    // 에러가 발생하면  articles 키 자체가 없어지므로 if 조건을 통해 에러 핸들링을 해준다.
+    if (response.status === 200) {
+      if (data.total_hits === 0) {
+        // total_hits 데이터 즉 찾은 몇개의 데이터 값이 0이므로 에러메시지 발생.
+        throw new Error("검색된 결과 값이 없습니다.");
+      }
+      news = data.articles;
+      console.log(news);
+      render();
+      // render ui에 뿌려진 뉴스를 호이스팅을 이용해 호출한다.
+    } else {
+      throw new Error(data.message); // throw 강제 에러 메세지 발생
+    }
+  } catch (error) {
+    errorRender(error.message);
+  }
 };
 
 // 메인 뉴스 페이지
@@ -96,6 +111,14 @@ const render = () => {
   // ${news.media} : ui에 고정된 이미지 글들을 문자보간 방식으로 api에서 꺼내와 변경해준다.
   document.getElementById("header-board").innerHTML = newsHTMl;
 };
+// 에러 핸들링을 통해 잡힌에러를 ui에 보여주는 함수
+const errorRender = (message) => {
+  let errorHTML = `<div class="alert alert-danger text-center" role="alert">${message}
+  A simple danger alert—check it out!
+</div>`;
+  document.getElementById("header-board").innerHTML = errorHTML;
+};
+
 // 화살표 함수 사용시 호이스팅이 안되기 때문에 searchButton을 아래쪽으로 이동해주었다.
 searchButton.addEventListener("click", getNewsByKeyword);
 getElNews();
