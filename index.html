@@ -17,6 +17,10 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
     <link rel="stylesheet" href="./style.css" />
     <script defer src="./main.js"></script>
   </head>
@@ -24,9 +28,11 @@
     <!-- title , menu -->
     <header>
       <div class="inner">
-        <div>
+        <div class="search">
           <input type="text" id="search-input" />
-          <button id="search-button">검색</button>
+          <button id="search-button">
+            <span class="material-icons"> search </span>
+          </button>
         </div>
         <div class="head-line">
           <svg viewBox="0 0 184 25" fill="#000">
@@ -72,5 +78,11 @@
         </div>
       </div>
     </section>
+    <!-- 뉴스 페이지네이션 -->
+    <nav aria-label="Page navigation example">
+      <div class="inner">
+        <ul class="pagination"></ul>
+      </div>
+    </nav>
   </body>
 </html>
