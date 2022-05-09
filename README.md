@@ -2,7 +2,7 @@
 
 - API 활용한 뉴스타임즈 Project
 - 실제 Times website: https://www.nytimes.com/international/
-- 참고 API 주소 : https://docs.newscatcherapi.com/api-docs/endpoints/search-news(한달 무료)
+- 참고 API 주소 : https://docs.newscatcherapi.com/api-docs/endpoints/search-news (한달 무료)
 - API 호출도구(Postman) :https://www.postman.com/
 - 배포 문제와 API 기간 만료로 인해 링크대신 이미지 첨부
 ![스크린샷 2022-05-09 오후 3 05 50](https://user-images.githubusercontent.com/102017296/167349999-23bebc72-276d-4f19-a6f2-af2dffd64331.png)
