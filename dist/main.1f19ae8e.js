@@ -886,7 +886,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var news = [];
 var menus = document.querySelectorAll(".menus button");
 var page = 1;
-var totalPages = 0; // foreach 를 통한 각각 메뉴 에다가 아이템을 준다 메뉴 반복
+var totalPages = 0;
+var searchEl = document.querySelector(".search"); // 돋보기 모양 클릭 변수
+
+var searchInputEl = document.getElementById("search-input"); // 돋보기 모양 포커스
+
+searchEl.addEventListener("click", function () {
+  searchInputEl.focus();
+});
+searchInputEl.addEventListener("focus", function () {
+  searchEl.classList.add("focused"); // classList 특정 요소에 클래스 정보를 가지고 있는 객체에 add하겠다.
+
+  searchInputEl.setAttribute("placeholder", "영화를 검색하세요."); // setAttribute : html에 어떤 태그 속성을 지정하겠다.
+});
+searchInputEl.addEventListener("blur", function () {
+  // focus 해제 blur
+  searchEl.classList.remove("focused"); // classList 특정 요소에 클래스 정보를 가지고 있는 객체에 add하겠다.
+
+  searchInputEl.setAttribute("placeholder", ""); // setAttribute : html에 어떤 태그 속성을 지정하겠다.
+}); // foreach 를 통한 각각 메뉴 에다가 아이템을 준다 메뉴 반복
 
 menus.forEach(function (menu) {
   return menu.addEventListener("click", function (event) {
@@ -1121,7 +1139,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49214" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50321" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

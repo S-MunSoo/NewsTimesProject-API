@@ -9,6 +9,25 @@ let menus = document.querySelectorAll(".menus button");
 let page = 1;
 let totalPages = 0;
 
+let searchEl = document.querySelector(".search"); // 돋보기 모양 클릭 변수
+let searchInputEl = document.getElementById("search-input");
+
+// 돋보기 모양 포커스
+searchEl.addEventListener("click", () => {
+  searchInputEl.focus();
+});
+
+searchInputEl.addEventListener("focus", () => {
+  searchEl.classList.add("focused"); // classList 특정 요소에 클래스 정보를 가지고 있는 객체에 add하겠다.
+  searchInputEl.setAttribute("placeholder", "영화를 검색하세요."); // setAttribute : html에 어떤 태그 속성을 지정하겠다.
+});
+
+searchInputEl.addEventListener("blur", () => {
+  // focus 해제 blur
+  searchEl.classList.remove("focused"); // classList 특정 요소에 클래스 정보를 가지고 있는 객체에 add하겠다.
+  searchInputEl.setAttribute("placeholder", ""); // setAttribute : html에 어떤 태그 속성을 지정하겠다.
+});
+
 // foreach 를 통한 각각 메뉴 에다가 아이템을 준다 메뉴 반복
 menus.forEach((menu) =>
   menu.addEventListener("click", (event) => getNewsByTopic(event))
